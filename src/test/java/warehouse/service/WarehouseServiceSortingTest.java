@@ -40,7 +40,6 @@ class WarehouseServiceSortingTest {
     @BeforeEach
     void setUp() {
         // Vi skapar några testprodukter med varierat pris och antal (kvantitet)
-        // Antar konstruktör eller setters utifrån din service-kod
         p1 = new Product("1","Skruvmejsel", "Verktyg", 10.0, 100, LocalDate.now());  // Billigast, flest i lager
         p2 = new Product("2","Skiftnyckel", "Verktyg", 50.0, 50, LocalDate.now());   // Mellan
         p3 = new Product("3","Hammare", "Verktyg", 200.0, 5, LocalDate.now());  // Dyrast, lägst i lager
@@ -65,7 +64,7 @@ class WarehouseServiceSortingTest {
 
             assertThat(result)
                     .hasSize(2)
-                    .containsExactly(p3, p2); // Hammare (200.0) sedan Mutter (50.0)
+                    .containsExactly(p3, p2);
         }
 
         /**
@@ -80,7 +79,7 @@ class WarehouseServiceSortingTest {
 
             assertThat(result)
                     .hasSize(2)
-                    .containsExactly(p1, p2); // Skruv (10.0) sedan Mutter (50.0)
+                    .containsExactly(p1, p2);
         }
     }
 
@@ -103,8 +102,6 @@ class WarehouseServiceSortingTest {
 
             assertThat(result)
                     .hasSize(2)
-
-                    // p1 har 100 st, p2 har 50 st
                     .containsExactly(p1, p2);
         }
 
