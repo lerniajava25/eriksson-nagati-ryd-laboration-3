@@ -61,7 +61,7 @@ public class WarehouseService {
                 .filter(product -> product.getCategory() != null && !product.getCategory().trim().isEmpty())
                 .collect(Collectors.groupingBy(
                         product -> product.getCategory().trim(),
-                        Collectors.averagingDouble(Product::getPrice)
+                        Collectors.averagingDouble(product -> product.getPrice())
                 ));
     }
 }
