@@ -19,6 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * The type Warehouse service test.
+ */
 @ExtendWith(MockitoExtension.class)
 class WarehouseServiceTest {
 
@@ -28,6 +31,9 @@ class WarehouseServiceTest {
     @InjectMocks
     private WarehouseService warehouseService;
 
+    /**
+     * Should return products from selected category.
+     */
     @Test
     void shouldReturnProductsFromSelectedCategory() {
 
@@ -59,6 +65,9 @@ class WarehouseServiceTest {
         verify(productRepository).findAll();
     }
 
+    /**
+     * Should ignore upper and lower case when searching category.
+     */
     @Test
     void shouldIgnoreUpperAndLowerCaseWhenSearchingCategory() {
 
@@ -80,6 +89,9 @@ class WarehouseServiceTest {
         assertEquals("Laptop", result.get(0).getName());
     }
 
+    /**
+     * Should return empty list when category does not exist.
+     */
     @Test
     void shouldReturnEmptyListWhenCategoryDoesNotExist() {
 
@@ -100,6 +112,9 @@ class WarehouseServiceTest {
         assertTrue(result.isEmpty());
     }
 
+    /**
+     * Should throw exception when category is empty.
+     */
     @Test
     void shouldThrowExceptionWhenCategoryIsEmpty() {
 
@@ -109,6 +124,9 @@ class WarehouseServiceTest {
         );
     }
 
+    /**
+     * Should return products below stock threshold.
+     */
     @Test
     void shouldReturnProductsBelowStockThreshold() {
 
@@ -140,6 +158,9 @@ class WarehouseServiceTest {
         verify(productRepository).findAll();
     }
 
+    /**
+     * Should return empty list when no products have low stock.
+     */
     @Test
     void shouldReturnEmptyListWhenNoProductsHaveLowStock() {
 
@@ -160,6 +181,9 @@ class WarehouseServiceTest {
         assertTrue(result.isEmpty());
     }
 
+    /**
+     * Should throw exception when threshold is negative.
+     */
     @Test
     void shouldThrowExceptionWhenThresholdIsNegative() {
 
