@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class WarehouseService {
 
     private final ProductRepository productRepository;
-    private java.lang.Object Collectors;
 
     public WarehouseService(ProductRepository productRepository) {
         this.productRepository = productRepository;
