@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import warehouse.model.Product;
 import warehouse.service.WarehouseService;
+import java.util.Map;
 
 import java.util.List;
 import java.util.Optional;
@@ -82,13 +83,10 @@ public class ProductController {
         if (prodOrder.isPresent() && prodOrder.get().equals("l") && numberOfItems.isPresent()) {
             return warehouseService.sortOutNLeastPopularProducts(numberOfItems.get());
         }
-        if (prodOrder.isPresent() && prodOrder.get().equals("m") && numberOfItems.isEmpty()) {
+        if  (numberOfItems.isEmpty()) {
             return warehouseService.sortOutNMostPopularProducts(MAX_VALUE);
         }
-        if  (prodOrder.isEmpty() && numberOfItems.isPresent()) {
-            return warehouseService.sortOutNMostPopularProducts(numberOfItems.get());
-        }
-        return warehouseService.sortOutNMostPopularProducts(MAX_VALUE);
+        return warehouseService.sortOutNMostPopularProducts(numberOfItems.get());
     }
 
     /**
@@ -106,12 +104,17 @@ public class ProductController {
         if (priceOrder.isPresent() && priceOrder.get().equals("asc") && numberOfItems.isPresent()) {
             return warehouseService.sortOutNLeastExpensiveProducts(numberOfItems.get());
         }
-        if (priceOrder.isPresent() && priceOrder.get().equals("desc") && numberOfItems.isEmpty()) {
+        if (numberOfItems.isEmpty()) {
             return warehouseService.sortOutNMostExpensiveProducts(MAX_VALUE);
         }
-        if (priceOrder.isEmpty() && numberOfItems.isPresent()) {
-            return warehouseService.sortOutNMostExpensiveProducts(numberOfItems.get());
-        }
-        return warehouseService.sortOutNMostExpensiveProducts(MAX_VALUE);
+        return warehouseService.sortOutNMostExpensiveProducts(numberOfItems.get());
+    @GetMapping("/analytics/total-value")
+    public double getTotalWarehouseValue() {
+        return warehouseService.calculateTotalWarehouseValue();
+    }
+
+    @GetMapping("/analytics/average-price")
+    public Map<String, Double> getAveragePricePerCategory() {
+        return warehouseService.getAveragePricePerCategory();
     }
 }
