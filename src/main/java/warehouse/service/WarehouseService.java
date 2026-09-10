@@ -6,9 +6,7 @@ import warehouse.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +57,7 @@ public class WarehouseService {
     }
 
     /**
-     * Find low stock products list.
+     * Find low-stock products list.
      *
      * @param threshold the threshold
      * @return the list
@@ -93,9 +91,9 @@ public class WarehouseService {
     }
 
     /**
-     * Sort out n least expensive products list.
+     * Sort out the n least expensive products list.
      *
-     * @param n the n
+     * @param n the number of items
      * @return the list
      */
     public List<Product> sortOutNLeastExpensiveProducts(int n) {
@@ -147,7 +145,7 @@ public class WarehouseService {
                 .filter(product -> product.getCategory() != null && !product.getCategory().trim().isEmpty())
                 .collect(Collectors.groupingBy(
                         product -> product.getCategory().trim(),
-                        Collectors.averagingDouble(product -> (double) product.getPrice()) // Force cast to double
+                        Collectors.averagingDouble(Product::getPrice)
                 ));
     }
 }
