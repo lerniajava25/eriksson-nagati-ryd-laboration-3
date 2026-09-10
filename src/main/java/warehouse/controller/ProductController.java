@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import warehouse.model.Product;
 import warehouse.service.WarehouseService;
+import java.util.Map;
 
 import java.util.List;
 import java.util.Optional;
@@ -107,5 +108,13 @@ public class ProductController {
             return warehouseService.sortOutNMostExpensiveProducts(MAX_VALUE);
         }
         return warehouseService.sortOutNMostExpensiveProducts(numberOfItems.get());
+    @GetMapping("/analytics/total-value")
+    public double getTotalWarehouseValue() {
+        return warehouseService.calculateTotalWarehouseValue();
+    }
+
+    @GetMapping("/analytics/average-price")
+    public Map<String, Double> getAveragePricePerCategory() {
+        return warehouseService.getAveragePricePerCategory();
     }
 }

@@ -6,7 +6,10 @@ import warehouse.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The type Warehouse service.
@@ -129,5 +132,22 @@ public class WarehouseService {
                 .sorted(Comparator.comparingInt(Product::getQuantity))
                 .limit(n)
                 .toList();
+    }
+
+    public double calculateTotalWarehouseValue() {
+        return productRepository.findAll()
+                .stream()
+                .mapToDouble(product -> product.getQuantity() * product.getPrice()) // Keep .getPrice()
+                .sum();
+    }
+
+    public java.util.Map<String, Double> getAveragePricePerCategory() {
+        return productRepository.findAll()
+                .stream()
+                .filter(product -> product.getCategory() != null && !product.getCategory().trim().isEmpty())
+                .collect(Collectors.groupingBy(
+                        product -> product.getCategory().trim(),
+                        Collectors.averagingDouble(product -> (double) product.getPrice()) // Force cast to double
+                ));
     }
 }
