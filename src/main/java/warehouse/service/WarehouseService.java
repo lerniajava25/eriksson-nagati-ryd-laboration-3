@@ -51,7 +51,7 @@ public class WarehouseService {
     public double calculateTotalWarehouseValue() {
         return productRepository.findAll()
                 .stream()
-                .mapToDouble(product -> product.getQuantity() * product.getPrice())
+                .mapToDouble(product -> product.getQuantity() * product.getPrice()) // Keep .getPrice()
                 .sum();
     }
 
@@ -61,7 +61,7 @@ public class WarehouseService {
                 .filter(product -> product.getCategory() != null && !product.getCategory().trim().isEmpty())
                 .collect(Collectors.groupingBy(
                         product -> product.getCategory().trim(),
-                        Collectors.averagingDouble(product -> product.getPrice())
+                        Collectors.averagingDouble(product -> (double) product.getPrice()) // Force cast to double
                 ));
     }
 }
