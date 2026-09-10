@@ -32,6 +32,41 @@ class WarehouseServiceTest {
     private WarehouseService warehouseService;
 
     /**
+     * Should return all products.
+     */
+    @Test
+    void shouldReturnAllProducts() {
+
+        Product laptop = new Product(
+                "1",
+                "Laptop",
+                "Electronics",
+                1000.0,
+                2,
+                LocalDate.now());
+
+        Product bread = new Product(
+                "2",
+                "Bread",
+                "Food",
+                20.0,
+                10,
+                LocalDate.now());
+
+        when(productRepository.findAll())
+                .thenReturn(Arrays.asList(laptop, bread));
+
+        List<Product> result =
+                warehouseService.findAll();
+
+        assertEquals(2, result.size());
+        assertEquals("Laptop", result.get(0).getName());
+        assertEquals("Bread", result.get(1).getName());
+
+        verify(productRepository).findAll();
+    }
+
+    /**
      * Should return products from selected category.
      */
     @Test
