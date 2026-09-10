@@ -82,10 +82,13 @@ public class ProductController {
         if (prodOrder.isPresent() && prodOrder.get().equals("l") && numberOfItems.isPresent()) {
             return warehouseService.sortOutNLeastPopularProducts(numberOfItems.get());
         }
-        if  (numberOfItems.isEmpty()) {
+        if (prodOrder.isPresent() && prodOrder.get().equals("m") && numberOfItems.isEmpty()) {
             return warehouseService.sortOutNMostPopularProducts(MAX_VALUE);
         }
-        return warehouseService.sortOutNMostPopularProducts(numberOfItems.get());
+        if  (prodOrder.isEmpty() && numberOfItems.isPresent()) {
+            return warehouseService.sortOutNMostPopularProducts(numberOfItems.get());
+        }
+        return warehouseService.sortOutNMostPopularProducts(MAX_VALUE);
     }
 
     /**
@@ -103,9 +106,12 @@ public class ProductController {
         if (priceOrder.isPresent() && priceOrder.get().equals("asc") && numberOfItems.isPresent()) {
             return warehouseService.sortOutNLeastExpensiveProducts(numberOfItems.get());
         }
-        if (numberOfItems.isEmpty()) {
+        if (priceOrder.isPresent() && priceOrder.get().equals("desc") && numberOfItems.isEmpty()) {
             return warehouseService.sortOutNMostExpensiveProducts(MAX_VALUE);
         }
-        return warehouseService.sortOutNMostExpensiveProducts(numberOfItems.get());
+        if (priceOrder.isEmpty() && numberOfItems.isPresent()) {
+            return warehouseService.sortOutNMostExpensiveProducts(numberOfItems.get());
+        }
+        return warehouseService.sortOutNMostExpensiveProducts(MAX_VALUE);
     }
 }
