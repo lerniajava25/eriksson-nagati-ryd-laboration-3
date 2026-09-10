@@ -34,14 +34,14 @@ public class ProductController {
 
         return warehouseService.findLowStockProducts(threshold);
     }
-}
 
-@GetMapping("/analytics/total-value")
-public double getTotalWarehouseValue() {
-    return warehouseService.calculateTotalWarehouseValue();
-}
+    @GetMapping("/analytics/total-value")
+    public double getTotalWarehouseValue() {
+        return warehouseService.calculateTotalWarehouseValue();
+    }
 
-@GetMapping("/analytics/average-price")
-public Map<String, Double> getAveragePricePerCategory() {
-    return warehouseService.getAveragePricePerCategory();
+    @GetMapping("/analytics/average-price")
+    public Map<String, Double> getAveragePricePerCategory() {
+        return warehouseService.getAveragePricePerCategory();
+    }
 }
