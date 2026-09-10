@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import warehouse.model.Product;
 import warehouse.service.WarehouseService;
+import java.util.Map;
 
 import java.util.List;
 
@@ -32,5 +33,15 @@ public class ProductController {
             @RequestParam int threshold) {
 
         return warehouseService.findLowStockProducts(threshold);
+    }
+
+    @GetMapping("/analytics/total-value")
+    public double getTotalWarehouseValue() {
+        return warehouseService.calculateTotalWarehouseValue();
+    }
+
+    @GetMapping("/analytics/average-price")
+    public Map<String, Double> getAveragePricePerCategory() {
+        return warehouseService.getAveragePricePerCategory();
     }
 }
