@@ -18,6 +18,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The type Warehouse service sorting test.
+ */
 @ExtendWith(MockitoExtension.class)
 class WarehouseServiceSortingTest {
 
@@ -31,6 +34,9 @@ class WarehouseServiceSortingTest {
     private Product p2;
     private Product p3;
 
+    /**
+     * Sets up.
+     */
     @BeforeEach
     void setUp() {
         // Vi skapar några testprodukter med varierat pris och antal (kvantitet)
@@ -40,10 +46,16 @@ class WarehouseServiceSortingTest {
         p3 = new Product("3","Hammare", "Verktyg", 200.0, 5, LocalDate.now());  // Dyrast, lägst i lager
     }
 
+    /**
+     * The type Price sorting tests.
+     */
     @Nested
     @DisplayName("Tester för sortering på pris")
     class PriceSortingTests {
 
+        /**
+         * Return products sorted by price descending.
+         */
         @Test
         @DisplayName("sortOutNMostExpensiveProducts ska returnera de dyraste produkterna i fallande ordning")
         void ReturnProductsSortedByPriceDescending() {
@@ -56,6 +68,9 @@ class WarehouseServiceSortingTest {
                     .containsExactly(p3, p2); // Hammare (200.0) sedan Mutter (50.0)
         }
 
+        /**
+         * Return products sorted by price ascending.
+         */
         @Test
         @DisplayName("sortOutNLeastExpensiveProducts ska returnera de billigaste produkterna i stigande ordning")
         void ReturnProductsSortedByPriceAscending() {
@@ -69,10 +84,16 @@ class WarehouseServiceSortingTest {
         }
     }
 
+    /**
+     * The type Popularity sorting tests.
+     */
     @Nested
     @DisplayName("Tester för sortering på popularitet/lagerantal")
     class PopularitySortingTests {
 
+        /**
+         * Return products sorted by quantity descending.
+         */
         @Test
         @DisplayName("sortOutNMostPopularProducts ska returnera produkterna med högst antal i fallande ordning")
         void ReturnProductsSortedByQuantityDescending() {
@@ -87,6 +108,9 @@ class WarehouseServiceSortingTest {
                     .containsExactly(p1, p2);
         }
 
+        /**
+         * Return products sorted by quantity ascending.
+         */
         @Test
         @DisplayName("sortOutNLeastPopularProducts ska returnera produkterna med lägst antal i stigande ordning")
         void ReturnProductsSortedByQuantityAscending() {
@@ -102,10 +126,16 @@ class WarehouseServiceSortingTest {
         }
     }
 
+    /**
+     * The type Edge cases tests.
+     */
     @Nested
     @DisplayName("Gränsfall och gränsvärdeshantering för sortering")
     class EdgeCasesTests {
 
+        /**
+         * When n is greater than list size should return all products.
+         */
         @Test
         @DisplayName("Om n är större än antalet produkter ska alla produkter returneras")
         void WhenNIsGreaterThanListSize_ShouldReturnAllProducts() {
@@ -118,6 +148,9 @@ class WarehouseServiceSortingTest {
                     .containsExactly(p2, p1);
         }
 
+        /**
+         * When n is zero should return empty list.
+         */
         @Test
         @DisplayName("Om n är 0 ska en tom lista returneras")
         void WhenNIsZero_ShouldReturnEmptyList() {
@@ -128,6 +161,9 @@ class WarehouseServiceSortingTest {
             assertThat(result).isEmpty();
         }
 
+        /**
+         * When repository is empty should return empty list.
+         */
         @Test
         @DisplayName("Om produktlistan är tom ska en tom lista returneras")
         void WhenRepositoryIsEmpty_ShouldReturnEmptyList() {
