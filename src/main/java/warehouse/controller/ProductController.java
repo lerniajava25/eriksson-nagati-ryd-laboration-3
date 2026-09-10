@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import warehouse.model.Product;
 import warehouse.service.WarehouseService;
 import java.util.Map;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -56,10 +55,10 @@ public class ProductController {
     }
 
     /**
-     * Gets low stock products.
+     * Gets low-stock products.
      *
      * @param threshold the threshold
-     * @return the low stock products
+     * @return the low-stock products
      */
     @GetMapping("/low-stock")
     public List<Product> getLowStockProducts(
@@ -108,11 +107,23 @@ public class ProductController {
             return warehouseService.sortOutNMostExpensiveProducts(MAX_VALUE);
         }
         return warehouseService.sortOutNMostExpensiveProducts(numberOfItems.get());
+    }
+
+    /**
+     * Gets total warehouse value.
+     *
+     * @return the total warehouse value
+     */
     @GetMapping("/analytics/total-value")
     public double getTotalWarehouseValue() {
         return warehouseService.calculateTotalWarehouseValue();
     }
 
+    /**
+     * Gets average price per category.
+     *
+     * @return the average price per category
+     */
     @GetMapping("/analytics/average-price")
     public Map<String, Double> getAveragePricePerCategory() {
         return warehouseService.getAveragePricePerCategory();
