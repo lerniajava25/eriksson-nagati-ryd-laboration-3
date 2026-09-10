@@ -4,13 +4,16 @@ import org.springframework.stereotype.Service;
 import warehouse.model.Product;
 import warehouse.repository.ProductRepository;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class WarehouseService {
 
     private final ProductRepository productRepository;
+    private java.lang.Object Collectors;
 
     public WarehouseService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -44,5 +47,22 @@ public class WarehouseService {
                 .filter(product ->
                         product.getQuantity() < threshold)
                 .collect(Collectors.toList());
+    }
+
+    public double calculateTotalWarehouseValue() {
+        return productRepository.findAll()
+                .stream()
+                .mapToDouble(product -> product.getQuantity() * product.getPrice())
+                .sum();
+    }
+
+    public java.util.Map<String, Double> getAveragePricePerCategory() {
+        return productRepository.findAll()
+                .stream()
+                .filter(product -> product.getCategory() != null && !product.getCategory().trim().isEmpty())
+                .collect(Collectors.groupingBy(
+                        product -> product.getCategory().trim(),
+                        Collectors.averagingDouble(Product::getPrice)
+                ));
     }
 }
