@@ -54,6 +54,12 @@ public class WarehouseService {
      * @return the created product
      */
     public Product createProduct(Product product) {
+
+        if (product == null) {
+            throw new IllegalArgumentException(
+                    "Product must not be null");
+        }
+
         if (product.getId() == null
                 || product.getId().trim().isEmpty()) {
             throw new IllegalArgumentException(
@@ -67,7 +73,7 @@ public class WarehouseService {
     /**
      * Update an existing product.
      *
-     * @param id the product id
+     * @param id      the product id
      * @param product the updated product
      * @return optional updated product
      */
@@ -75,14 +81,16 @@ public class WarehouseService {
             String id,
             Product product) {
 
-        if (productRepository.findById(id).isEmpty()) {
-            return Optional.empty();
+        if (product == null) {
+            throw new IllegalArgumentException(
+                    "Product must not be null");
         }
 
         product.setId(id);
-        productRepository.save(product);
 
-        return Optional.of(product);
+        return productRepository.updateIfPresent(
+                id,
+                product);
     }
 
     /**
@@ -102,6 +110,7 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> findByCategory(String category) {
+
         if (category == null || category.trim().isEmpty()) {
             throw new IllegalArgumentException(
                     "Category must not be empty");
@@ -123,6 +132,7 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> findLowStockProducts(int threshold) {
+
         if (threshold < 0) {
             throw new IllegalArgumentException(
                     "Threshold cannot be negative");

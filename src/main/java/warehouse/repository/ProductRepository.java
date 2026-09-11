@@ -18,7 +18,7 @@ public class ProductRepository {
             new ConcurrentHashMap<>();
 
     /**
-     * Find all collection.
+     * Find all products.
      *
      * @return the collection
      */
@@ -43,6 +43,25 @@ public class ProductRepository {
      */
     public void save(Product product) {
         products.put(product.getId(), product);
+    }
+
+    /**
+     * Atomically update an existing product.
+     *
+     * @param id      the product id
+     * @param product the replacement product
+     * @return the updated product if the id exists
+     */
+    public Optional<Product> updateIfPresent(
+            String id,
+            Product product) {
+
+        Product updatedProduct =
+                products.computeIfPresent(
+                        id,
+                        (key, existingProduct) -> product);
+
+        return Optional.ofNullable(updatedProduct);
     }
 
     /**

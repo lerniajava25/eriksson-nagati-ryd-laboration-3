@@ -18,7 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 /**
@@ -33,33 +35,21 @@ class WarehouseServiceTest {
     @InjectMocks
     private WarehouseService warehouseService;
 
-    /**
-     * Should return all products.
-     */
     @Test
     void shouldReturnAllProducts() {
 
         Product laptop = new Product(
-                "1",
-                "Laptop",
-                "Electronics",
-                1000.0,
-                2,
-                LocalDate.now());
+                "1", "Laptop", "Electronics",
+                1000.0, 2, LocalDate.now());
 
         Product bread = new Product(
-                "2",
-                "Bread",
-                "Food",
-                30.0,
-                10,
-                LocalDate.now());
+                "2", "Bread", "Food",
+                30.0, 10, LocalDate.now());
 
         when(productRepository.findAll())
                 .thenReturn(Arrays.asList(laptop, bread));
 
-        List<Product> result =
-                warehouseService.findAll();
+        List<Product> result = warehouseService.findAll();
 
         assertEquals(2, result.size());
         assertEquals("Laptop", result.get(0).getName());
@@ -68,27 +58,16 @@ class WarehouseServiceTest {
         verify(productRepository).findAll();
     }
 
-    /**
-     * Should return products from selected category.
-     */
     @Test
     void shouldReturnProductsFromSelectedCategory() {
 
         Product laptop = new Product(
-                "1",
-                "Laptop",
-                "Electronics",
-                10000.0,
-                4,
-                LocalDate.now());
+                "1", "Laptop", "Electronics",
+                10000.0, 4, LocalDate.now());
 
         Product milk = new Product(
-                "2",
-                "Milk",
-                "Food",
-                25.0,
-                10,
-                LocalDate.now());
+                "2", "Milk", "Food",
+                25.0, 10, LocalDate.now());
 
         when(productRepository.findAll())
                 .thenReturn(Arrays.asList(laptop, milk));
@@ -102,19 +81,12 @@ class WarehouseServiceTest {
         verify(productRepository).findAll();
     }
 
-    /**
-     * Should ignore upper and lower case when searching category.
-     */
     @Test
     void shouldIgnoreUpperAndLowerCaseWhenSearchingCategory() {
 
         Product laptop = new Product(
-                "1",
-                "Laptop",
-                "Electronics",
-                10000.0,
-                4,
-                LocalDate.now());
+                "1", "Laptop", "Electronics",
+                10000.0, 4, LocalDate.now());
 
         when(productRepository.findAll())
                 .thenReturn(Collections.singletonList(laptop));
@@ -126,19 +98,12 @@ class WarehouseServiceTest {
         assertEquals("Laptop", result.get(0).getName());
     }
 
-    /**
-     * Should return empty list when category does not exist.
-     */
     @Test
     void shouldReturnEmptyListWhenCategoryDoesNotExist() {
 
         Product laptop = new Product(
-                "1",
-                "Laptop",
-                "Electronics",
-                10000.0,
-                4,
-                LocalDate.now());
+                "1", "Laptop", "Electronics",
+                10000.0, 4, LocalDate.now());
 
         when(productRepository.findAll())
                 .thenReturn(Collections.singletonList(laptop));
@@ -149,9 +114,6 @@ class WarehouseServiceTest {
         assertTrue(result.isEmpty());
     }
 
-    /**
-     * Should throw exception when category is empty.
-     */
     @Test
     void shouldThrowExceptionWhenCategoryIsEmpty() {
 
@@ -161,27 +123,16 @@ class WarehouseServiceTest {
         );
     }
 
-    /**
-     * Should return products below stock threshold.
-     */
     @Test
     void shouldReturnProductsBelowStockThreshold() {
 
         Product laptop = new Product(
-                "1",
-                "Laptop",
-                "Electronics",
-                10000.0,
-                2,
-                LocalDate.now());
+                "1", "Laptop", "Electronics",
+                10000.0, 2, LocalDate.now());
 
         Product mouse = new Product(
-                "2",
-                "Mouse",
-                "Electronics",
-                500.0,
-                20,
-                LocalDate.now());
+                "2", "Mouse", "Electronics",
+                500.0, 20, LocalDate.now());
 
         when(productRepository.findAll())
                 .thenReturn(Arrays.asList(laptop, mouse));
@@ -195,19 +146,12 @@ class WarehouseServiceTest {
         verify(productRepository).findAll();
     }
 
-    /**
-     * Should return empty list when no products have low stock.
-     */
     @Test
     void shouldReturnEmptyListWhenNoProductsHaveLowStock() {
 
         Product mouse = new Product(
-                "1",
-                "Mouse",
-                "Electronics",
-                500.0,
-                20,
-                LocalDate.now());
+                "1", "Mouse", "Electronics",
+                500.0, 20, LocalDate.now());
 
         when(productRepository.findAll())
                 .thenReturn(Collections.singletonList(mouse));
@@ -218,9 +162,6 @@ class WarehouseServiceTest {
         assertTrue(result.isEmpty());
     }
 
-    /**
-     * Should throw exception when threshold is negative.
-     */
     @Test
     void shouldThrowExceptionWhenThresholdIsNegative() {
 
@@ -230,19 +171,12 @@ class WarehouseServiceTest {
         );
     }
 
-    /**
-     * Should create a product.
-     */
     @Test
     void shouldCreateProduct() {
 
         Product product = new Product(
-                "10",
-                "Keyboard",
-                "Electronics",
-                800.0,
-                5,
-                LocalDate.now());
+                "10", "Keyboard", "Electronics",
+                800.0, 5, LocalDate.now());
 
         Product result =
                 warehouseService.createProduct(product);
@@ -252,39 +186,38 @@ class WarehouseServiceTest {
         verify(productRepository).save(product);
     }
 
-    /**
-     * Should throw exception when product id is empty.
-     */
     @Test
     void shouldThrowExceptionWhenCreatingProductWithEmptyId() {
 
         Product product = new Product(
-                "",
-                "Keyboard",
-                "Electronics",
-                800.0,
-                5,
-                LocalDate.now());
+                "", "Keyboard", "Electronics",
+                800.0, 5, LocalDate.now());
 
         assertThrows(
                 IllegalArgumentException.class,
                 () -> warehouseService.createProduct(product)
         );
+
+        verify(productRepository, never()).save(product);
     }
 
-    /**
-     * Should find product by id.
-     */
+    @Test
+    void shouldThrowExceptionWhenCreatingNullProduct() {
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> warehouseService.createProduct(null)
+        );
+
+        verifyNoInteractions(productRepository);
+    }
+
     @Test
     void shouldFindProductById() {
 
         Product product = new Product(
-                "10",
-                "Keyboard",
-                "Electronics",
-                800.0,
-                5,
-                LocalDate.now());
+                "10", "Keyboard", "Electronics",
+                800.0, 5, LocalDate.now());
 
         when(productRepository.findById("10"))
                 .thenReturn(Optional.of(product));
@@ -293,16 +226,11 @@ class WarehouseServiceTest {
                 warehouseService.findById("10");
 
         assertTrue(result.isPresent());
-        assertEquals(
-                "Keyboard",
-                result.get().getName());
+        assertEquals("Keyboard", result.get().getName());
 
         verify(productRepository).findById("10");
     }
 
-    /**
-     * Should return empty optional when product does not exist.
-     */
     @Test
     void shouldReturnEmptyWhenProductIdDoesNotExist() {
 
@@ -317,19 +245,8 @@ class WarehouseServiceTest {
         verify(productRepository).findById("999");
     }
 
-    /**
-     * Should update existing product.
-     */
     @Test
     void shouldUpdateExistingProduct() {
-
-        Product oldProduct = new Product(
-                "10",
-                "Keyboard",
-                "Electronics",
-                800.0,
-                5,
-                LocalDate.now());
 
         Product updatedProduct = new Product(
                 "different-id",
@@ -339,8 +256,12 @@ class WarehouseServiceTest {
                 8,
                 LocalDate.now());
 
-        when(productRepository.findById("10"))
-                .thenReturn(Optional.of(oldProduct));
+        updatedProduct.setId("10");
+
+        when(productRepository.updateIfPresent(
+                "10",
+                updatedProduct))
+                .thenReturn(Optional.of(updatedProduct));
 
         Optional<Product> result =
                 warehouseService.updateProduct(
@@ -348,33 +269,25 @@ class WarehouseServiceTest {
                         updatedProduct);
 
         assertTrue(result.isPresent());
-
-        assertEquals(
-                "10",
-                result.get().getId());
-
+        assertEquals("10", result.get().getId());
         assertEquals(
                 "Gaming Keyboard",
                 result.get().getName());
 
-        verify(productRepository).save(updatedProduct);
+        verify(productRepository)
+                .updateIfPresent("10", updatedProduct);
     }
 
-    /**
-     * Should return empty when updating product that does not exist.
-     */
     @Test
     void shouldReturnEmptyWhenUpdatingMissingProduct() {
 
         Product product = new Product(
-                "999",
-                "Unknown",
-                "Electronics",
-                100.0,
-                1,
-                LocalDate.now());
+                "999", "Unknown", "Electronics",
+                100.0, 1, LocalDate.now());
 
-        when(productRepository.findById("999"))
+        when(productRepository.updateIfPresent(
+                "999",
+                product))
                 .thenReturn(Optional.empty());
 
         Optional<Product> result =
@@ -384,12 +297,25 @@ class WarehouseServiceTest {
 
         assertTrue(result.isEmpty());
 
-        verify(productRepository).findById("999");
+        verify(productRepository)
+                .updateIfPresent("999", product);
+
+        verify(productRepository, never()).save(product);
     }
 
-    /**
-     * Should delete existing product.
-     */
+    @Test
+    void shouldThrowExceptionWhenUpdatingNullProduct() {
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> warehouseService.updateProduct(
+                        "10",
+                        null)
+        );
+
+        verifyNoInteractions(productRepository);
+    }
+
     @Test
     void shouldDeleteExistingProduct() {
 
@@ -404,9 +330,6 @@ class WarehouseServiceTest {
         verify(productRepository).deleteById("10");
     }
 
-    /**
-     * Should return false when deleting missing product.
-     */
     @Test
     void shouldReturnFalseWhenDeletingMissingProduct() {
 
