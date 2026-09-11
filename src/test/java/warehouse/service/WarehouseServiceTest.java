@@ -12,8 +12,10 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -49,7 +51,7 @@ class WarehouseServiceTest {
                 "2",
                 "Bread",
                 "Food",
-                20.0,
+                30.0,
                 10,
                 LocalDate.now());
 
@@ -226,5 +228,196 @@ class WarehouseServiceTest {
                 IllegalArgumentException.class,
                 () -> warehouseService.findLowStockProducts(-1)
         );
+    }
+
+    /**
+     * Should create a product.
+     */
+    @Test
+    void shouldCreateProduct() {
+
+        Product product = new Product(
+                "10",
+                "Keyboard",
+                "Electronics",
+                800.0,
+                5,
+                LocalDate.now());
+
+        Product result =
+                warehouseService.createProduct(product);
+
+        assertEquals(product, result);
+
+        verify(productRepository).save(product);
+    }
+
+    /**
+     * Should throw exception when product id is empty.
+     */
+    @Test
+    void shouldThrowExceptionWhenCreatingProductWithEmptyId() {
+
+        Product product = new Product(
+                "",
+                "Keyboard",
+                "Electronics",
+                800.0,
+                5,
+                LocalDate.now());
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> warehouseService.createProduct(product)
+        );
+    }
+
+    /**
+     * Should find product by id.
+     */
+    @Test
+    void shouldFindProductById() {
+
+        Product product = new Product(
+                "10",
+                "Keyboard",
+                "Electronics",
+                800.0,
+                5,
+                LocalDate.now());
+
+        when(productRepository.findById("10"))
+                .thenReturn(Optional.of(product));
+
+        Optional<Product> result =
+                warehouseService.findById("10");
+
+        assertTrue(result.isPresent());
+        assertEquals(
+                "Keyboard",
+                result.get().getName());
+
+        verify(productRepository).findById("10");
+    }
+
+    /**
+     * Should return empty optional when product does not exist.
+     */
+    @Test
+    void shouldReturnEmptyWhenProductIdDoesNotExist() {
+
+        when(productRepository.findById("999"))
+                .thenReturn(Optional.empty());
+
+        Optional<Product> result =
+                warehouseService.findById("999");
+
+        assertTrue(result.isEmpty());
+
+        verify(productRepository).findById("999");
+    }
+
+    /**
+     * Should update existing product.
+     */
+    @Test
+    void shouldUpdateExistingProduct() {
+
+        Product oldProduct = new Product(
+                "10",
+                "Keyboard",
+                "Electronics",
+                800.0,
+                5,
+                LocalDate.now());
+
+        Product updatedProduct = new Product(
+                "different-id",
+                "Gaming Keyboard",
+                "Electronics",
+                1200.0,
+                8,
+                LocalDate.now());
+
+        when(productRepository.findById("10"))
+                .thenReturn(Optional.of(oldProduct));
+
+        Optional<Product> result =
+                warehouseService.updateProduct(
+                        "10",
+                        updatedProduct);
+
+        assertTrue(result.isPresent());
+
+        assertEquals(
+                "10",
+                result.get().getId());
+
+        assertEquals(
+                "Gaming Keyboard",
+                result.get().getName());
+
+        verify(productRepository).save(updatedProduct);
+    }
+
+    /**
+     * Should return empty when updating product that does not exist.
+     */
+    @Test
+    void shouldReturnEmptyWhenUpdatingMissingProduct() {
+
+        Product product = new Product(
+                "999",
+                "Unknown",
+                "Electronics",
+                100.0,
+                1,
+                LocalDate.now());
+
+        when(productRepository.findById("999"))
+                .thenReturn(Optional.empty());
+
+        Optional<Product> result =
+                warehouseService.updateProduct(
+                        "999",
+                        product);
+
+        assertTrue(result.isEmpty());
+
+        verify(productRepository).findById("999");
+    }
+
+    /**
+     * Should delete existing product.
+     */
+    @Test
+    void shouldDeleteExistingProduct() {
+
+        when(productRepository.deleteById("10"))
+                .thenReturn(true);
+
+        boolean result =
+                warehouseService.deleteProduct("10");
+
+        assertTrue(result);
+
+        verify(productRepository).deleteById("10");
+    }
+
+    /**
+     * Should return false when deleting missing product.
+     */
+    @Test
+    void shouldReturnFalseWhenDeletingMissingProduct() {
+
+        when(productRepository.deleteById("999"))
+                .thenReturn(false);
+
+        boolean result =
+                warehouseService.deleteProduct("999");
+
+        assertFalse(result);
+
+        verify(productRepository).deleteById("999");
     }
 }

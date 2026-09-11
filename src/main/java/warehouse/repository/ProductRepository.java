@@ -5,6 +5,7 @@ import warehouse.model.Product;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,11 +27,31 @@ public class ProductRepository {
     }
 
     /**
-     * Save.
+     * Find product by id.
+     *
+     * @param id the product id
+     * @return optional product
+     */
+    public Optional<Product> findById(String id) {
+        return Optional.ofNullable(products.get(id));
+    }
+
+    /**
+     * Save product.
      *
      * @param product the product
      */
     public void save(Product product) {
         products.put(product.getId(), product);
+    }
+
+    /**
+     * Delete product by id.
+     *
+     * @param id the product id
+     * @return true if a product was deleted
+     */
+    public boolean deleteById(String id) {
+        return products.remove(id) != null;
     }
 }
