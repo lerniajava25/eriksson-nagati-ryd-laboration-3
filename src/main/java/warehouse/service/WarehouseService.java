@@ -44,6 +44,9 @@ public class WarehouseService {
      * @return optional product
      */
     public Optional<Product> findById(String id) {
+
+        validateId(id);
+
         return productRepository.findById(id);
     }
 
@@ -60,13 +63,10 @@ public class WarehouseService {
                     "Product must not be null");
         }
 
-        if (product.getId() == null
-                || product.getId().trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Product id must not be empty");
-        }
+        validateId(product.getId());
 
         productRepository.save(product);
+
         return product;
     }
 
@@ -86,6 +86,8 @@ public class WarehouseService {
                     "Product must not be null");
         }
 
+        validateId(id);
+
         product.setId(id);
 
         return productRepository.updateIfPresent(
@@ -100,6 +102,9 @@ public class WarehouseService {
      * @return true if deleted
      */
     public boolean deleteProduct(String id) {
+
+        validateId(id);
+
         return productRepository.deleteById(id);
     }
 
@@ -118,10 +123,12 @@ public class WarehouseService {
 
         return productRepository.findAll()
                 .stream()
-                .filter(product -> product.getCategory() != null)
+                .filter(product ->
+                        product.getCategory() != null)
                 .filter(product ->
                         product.getCategory()
-                                .equalsIgnoreCase(category.trim()))
+                                .equalsIgnoreCase(
+                                        category.trim()))
                 .toList();
     }
 
@@ -152,6 +159,7 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> sortOutNMostExpensiveProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
                 .sorted((p1, p2) ->
@@ -169,6 +177,7 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> sortOutNLeastExpensiveProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparingDouble(
@@ -184,6 +193,7 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> sortOutNMostPopularProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
                 .sorted((p1, p2) ->
@@ -201,6 +211,7 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> sortOutNLeastPopularProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparingInt(
@@ -212,9 +223,10 @@ public class WarehouseService {
     /**
      * Calculate total warehouse value.
      *
-     * @return total warehouse value
+     * @return the total warehouse value
      */
     public double calculateTotalWarehouseValue() {
+
         return productRepository.findAll()
                 .stream()
                 .mapToDouble(product ->
@@ -224,11 +236,12 @@ public class WarehouseService {
     }
 
     /**
-     * Get average price per category.
+     * Gets average price per category.
      *
      * @return average price per category
      */
     public Map<String, Double> getAveragePricePerCategory() {
+
         return productRepository.findAll()
                 .stream()
                 .filter(product ->
@@ -242,5 +255,18 @@ public class WarehouseService {
                         Collectors.averagingDouble(
                                 Product::getPrice)
                 ));
+    }
+
+    /**
+     * Validate product id.
+     *
+     * @param id the product id
+     */
+    private void validateId(String id) {
+
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Product id must not be empty");
+        }
     }
 }
