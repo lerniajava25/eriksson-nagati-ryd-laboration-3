@@ -7,6 +7,8 @@ import warehouse.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class WarehouseService {
+
     private final ProductRepository productRepository;
 
     /**
@@ -35,6 +38,77 @@ public class WarehouseService {
     }
 
     /**
+     * Find product by id.
+     *
+     * @param id the product id
+     * @return optional product
+     */
+    public Optional<Product> findById(String id) {
+
+        validateId(id);
+
+        return productRepository.findById(id);
+    }
+
+    /**
+     * Create a new product.
+     *
+     * @param product the product
+     * @return the created product
+     */
+    public Product createProduct(Product product) {
+
+        if (product == null) {
+            throw new IllegalArgumentException(
+                    "Product must not be null");
+        }
+
+        validateId(product.getId());
+
+        productRepository.save(product);
+
+        return product;
+    }
+
+    /**
+     * Update an existing product.
+     *
+     * @param id      the product id
+     * @param product the updated product
+     * @return optional updated product
+     */
+    public Optional<Product> updateProduct(
+            String id,
+            Product product) {
+
+        if (product == null) {
+            throw new IllegalArgumentException(
+                    "Product must not be null");
+        }
+
+        validateId(id);
+
+        product.setId(id);
+
+        return productRepository.updateIfPresent(
+                id,
+                product);
+    }
+
+    /**
+     * Delete product.
+     *
+     * @param id the product id
+     * @return true if deleted
+     */
+    public boolean deleteProduct(String id) {
+
+        validateId(id);
+
+        return productRepository.deleteById(id);
+    }
+
+    /**
      * Find by category list.
      *
      * @param category the category
@@ -49,10 +123,12 @@ public class WarehouseService {
 
         return productRepository.findAll()
                 .stream()
-                .filter(product -> product.getCategory() != null)
+                .filter(product ->
+                        product.getCategory() != null)
                 .filter(product ->
                         product.getCategory()
-                                .equalsIgnoreCase(category.trim()))
+                                .equalsIgnoreCase(
+                                        category.trim()))
                 .toList();
     }
 
@@ -83,23 +159,29 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> sortOutNMostExpensiveProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
-                .sorted((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()))
+                .sorted((p1, p2) ->
+                        Double.compare(
+                                p2.getPrice(),
+                                p1.getPrice()))
                 .limit(n)
                 .toList();
     }
 
     /**
-     * Sort out the n least expensive products list.
+     * Sort out n least expensive products list.
      *
      * @param n the number of items
      * @return the list
      */
     public List<Product> sortOutNLeastExpensiveProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparingDouble(Product::getPrice))
+                .sorted(Comparator.comparingDouble(
+                        Product::getPrice))
                 .limit(n)
                 .toList();
     }
@@ -111,9 +193,13 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> sortOutNMostPopularProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
-                .sorted((p1, p2) -> Integer.compare(p2.getQuantity(), p1.getQuantity()))
+                .sorted((p1, p2) ->
+                        Integer.compare(
+                                p2.getQuantity(),
+                                p1.getQuantity()))
                 .limit(n)
                 .toList();
     }
@@ -125,27 +211,62 @@ public class WarehouseService {
      * @return the list
      */
     public List<Product> sortOutNLeastPopularProducts(int n) {
+
         return productRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparingInt(Product::getQuantity))
+                .sorted(Comparator.comparingInt(
+                        Product::getQuantity))
                 .limit(n)
                 .toList();
     }
 
+    /**
+     * Calculate total warehouse value.
+     *
+     * @return the total warehouse value
+     */
     public double calculateTotalWarehouseValue() {
+
         return productRepository.findAll()
                 .stream()
-                .mapToDouble(product -> product.getQuantity() * product.getPrice()) // Keep .getPrice()
+                .mapToDouble(product ->
+                        product.getQuantity()
+                                * product.getPrice())
                 .sum();
     }
 
-    public java.util.Map<String, Double> getAveragePricePerCategory() {
+    /**
+     * Gets average price per category.
+     *
+     * @return average price per category
+     */
+    public Map<String, Double> getAveragePricePerCategory() {
+
         return productRepository.findAll()
                 .stream()
-                .filter(product -> product.getCategory() != null && !product.getCategory().trim().isEmpty())
+                .filter(product ->
+                        product.getCategory() != null
+                                && !product.getCategory()
+                                .trim()
+                                .isEmpty())
                 .collect(Collectors.groupingBy(
-                        product -> product.getCategory().trim(),
-                        Collectors.averagingDouble(Product::getPrice)
+                        product ->
+                                product.getCategory().trim(),
+                        Collectors.averagingDouble(
+                                Product::getPrice)
                 ));
+    }
+
+    /**
+     * Validate product id.
+     *
+     * @param id the product id
+     */
+    private void validateId(String id) {
+
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Product id must not be empty");
+        }
     }
 }
