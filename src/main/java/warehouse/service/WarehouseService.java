@@ -38,7 +38,7 @@ public class WarehouseService {
     }
 
     /**
-     * Find product by id.
+     * Find a product by id.
      *
      * @param id the product id
      * @return optional product

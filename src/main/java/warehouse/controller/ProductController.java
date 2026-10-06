@@ -43,7 +43,7 @@ public class ProductController {
      *
      * @return all products
      */
-    @GetMapping("/all")
+    @GetMapping
     public List<Product> getAllProducts() {
         return warehouseService.findAll();
     }
